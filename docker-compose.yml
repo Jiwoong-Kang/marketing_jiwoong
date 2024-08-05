@@ -1,0 +1,9 @@
+services:
+  marketing_pg:
+    container_name: marketing_pg
+    image: postgres:latest
+    restart: always
+    env_file:
+      - docker.env
+    ports:
+      - '5437:5432'
