@@ -3,16 +3,18 @@ import { BeforeInsert, Column, Entity } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @Column({ unique: true })
   public email: string;
 
   @Column()
+  @Exclude()
   public password: string;
 
   @Column()
