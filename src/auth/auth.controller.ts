@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   Post,
   Put,
   Req,
@@ -13,12 +14,16 @@ import { LoginUserDto } from '../user/dto/login-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RequestWithUser } from './interfaces/requestWithUser.interface';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { EmailDto } from '../user/dto/email.dto';
 import { ChangePasswordDto } from '../user/dto/change-password.dto';
 import { UserService } from '../user/user.service';
 import { EmailVerificationDto } from '../user/dto/email-verification.dto';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { KakaoAuthGuard } from './guards/kakao-auth.guard';
+import { NaverAuthGuard } from './guards/naver-auth.guard';
 
+@ApiBearerAuth()
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -29,8 +34,9 @@ export class AuthController {
 
   @Post('/signup')
   async signupUser(@Body() createUserDto: CreateUserDto) {
-    await this.authService.signupUser(createUserDto);
-    return this.authService.signupWelcomeEmail(createUserDto.email);
+    const newUser = await this.authService.signupUser(createUserDto);
+    // await this.authService.signupWelcomeEmail(createUserDto.email);
+    return newUser;
   }
 
   @Post('/login')
@@ -70,5 +76,47 @@ export class AuthController {
     return await this.authService.confirmEmailVerification(
       emailVerificationDto,
     );
+  }
+
+  @Get('/google')
+  @UseGuards(GoogleAuthGuard)
+  async googleLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleLoginCallback(@Req() req: RequestWithUser) {
+    const user = req.user;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
+  }
+
+  @Get('/kakao')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/kakao/callback')
+  @UseGuards(KakaoAuthGuard)
+  async kakaoLoginCallback(@Req() req: RequestWithUser) {
+    const user = req.user;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
+  }
+
+  @Get('/naver')
+  @UseGuards(NaverAuthGuard)
+  async naverLogin() {
+    return HttpStatus.OK;
+  }
+
+  @Get('/naver/callback')
+  @UseGuards(NaverAuthGuard)
+  async naverLoginCallback(@Req() req: RequestWithUser) {
+    const user = req.user;
+    const token = await this.authService.generateAccessToken(user.id);
+    return { user, token };
   }
 }

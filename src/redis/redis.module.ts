@@ -13,8 +13,6 @@ import * as redisStore from 'cache-manager-redis-store';
           store: redisStore,
           host: cfg.get('REDIS_HOST'),
           port: cfg.get('REDIS_PORT'),
-          username: cfg.get('REDIS_USER'),
-          password: cfg.get('REDIS_PASSWORD'),
           ttl: cfg.get('REDIS_TTL'),
         };
       },

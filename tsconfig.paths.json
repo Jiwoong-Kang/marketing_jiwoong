@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@root/*": ["./src/*"],
+      "@common/*": ["./src/common/*"],
+      "@database/*": ["./src/database/*"],
+      "@user/*": ["./src/user/*"],
+      "@auth/*": ["./src/auth/*"],
+      "@product/*": ["./src/product/*"],
+      "@redis/*": ["./src/redis/*"],
+      "@order/*": ["./src/order/*"],
+      "@email/*": ["./src/email/*"],
+      "@config/*": ["./src/config/*"],
+    }
+  }
+}

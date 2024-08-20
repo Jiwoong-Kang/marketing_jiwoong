@@ -7,3 +7,11 @@ services:
       - docker.env
     ports:
       - '5437:5432'
+
+  marketing_redis:
+    container_name: marketing_redis
+    image: redis:alpine
+    env_file:
+      - docker.env
+    ports:
+      - '6380:6379'
