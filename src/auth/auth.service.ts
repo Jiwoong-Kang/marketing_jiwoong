@@ -35,7 +35,7 @@ export class AuthService {
       if (error?.code === PostgresErrorCodes.unique_violation) {
         throw new HttpException(
           'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.CONFLICT,
         );
       } else if (error?.code === PostgresErrorCodes.not_null_violation) {
         throw new HttpException(
@@ -84,8 +84,9 @@ export class AuthService {
     const payload: any = { email };
     const token = this.jwtService.sign(payload, {
       secret: this.configService.get('FIND_PASSWORD_TOKEN_SECRET'),
-      expiresIn: this.configService.get('FIND_PASSWORD_EXPIRATION_TIME'),
+      expiresIn: `${this.configService.get('FIND_PASSWORD_EXPIRATION_TIME')}`,
     });
+    // 위에 expiresin 조심하기
     const url = `${this.configService.get('EMAIL_BASE_URL')}/change/password?token=${token}`;
     await this.emailService.sendMail({
       to: email,

@@ -51,7 +51,7 @@ export class AuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async authenticate(@Req() req: RequestWithUser) {
-    return req.user;
+    return await req.user;
   }
 
   @Post('/find/password')

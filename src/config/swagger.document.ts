@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 export const setupSwagger = (app: INestApplication) => {
   const config = new DocumentBuilder()
     .setTitle('Jiwoong api')
-    .setDescription('Jiwoong open api')
+    .setDescription('Jiwoong open api-marketing')
     .addBearerAuth()
     .setVersion('1.0')
     .addTag('Jiwoong')

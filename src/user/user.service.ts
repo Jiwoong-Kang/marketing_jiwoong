@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -18,11 +18,19 @@ export class UserService {
   ) {}
 
   async getUserById(id: string) {
-    return await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   async getUserByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   async createUser(createUserDto: CreateUserDto) {
@@ -32,7 +40,7 @@ export class UserService {
   }
 
   async changePasswordWithToken(changePasswordDto: ChangePasswordDto) {
-    const { email } = await this.jwtService.verify(changePasswordDto.token, {
+    const { email } = this.jwtService.verify(changePasswordDto.token, {
       secret: this.configService.get('FIND_PASSWORD_TOKEN_SECRET'),
     });
     const user = await this.getUserByEmail(email);
