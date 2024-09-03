@@ -10,6 +10,8 @@ import * as bcrypt from 'bcryptjs';
 import { PageOptionsDto } from '@common/dtos/page-options.dto';
 import { PageDto } from '@common/dtos/page.dto';
 import { PageMetaDto } from '@common/dtos/page-meta.dto';
+import { BufferedFile } from '@root/minio-client/file.model';
+import { MinioClientService } from '@root/minio-client/minio-client.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly minioClientService: MinioClientService,
   ) {}
 
   async getUserById(id: string) {
@@ -64,5 +67,21 @@ export class UserService {
     const { entities } = await queryBuilder.getRawAndEntities();
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
     return new PageDto(entities, pageMetaDto);
+  }
+
+  async updateUserInfoByToken(
+    user: User,
+    image?: BufferedFile,
+    updateUserDto?: CreateUserDto,
+  ) {
+    const profileImg = await this.minioClientService.uploadProfileImg(
+      user,
+      image,
+      'profile',
+    );
+    return await this.userRepository.update(user.id, {
+      ...updateUserDto,
+      profileImg,
+    });
   }
 }
