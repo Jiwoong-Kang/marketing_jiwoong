@@ -7,6 +7,8 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Provider } from '../../common/enums/provider.enum';
+import { CreateProductDto } from '@product/dto/create-product.dto';
+import { Consent } from '@root/consent/entities/consent.entity';
 
 export class CreateUserDto {
   @IsString()
@@ -30,4 +32,7 @@ export class CreateUserDto {
 
   @IsString()
   provider?: Provider;
+
+  @ApiProperty({ type: CreateProductDto })
+  consent?: Consent;
 }
