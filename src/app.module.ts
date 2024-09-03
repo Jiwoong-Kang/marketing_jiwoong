@@ -13,6 +13,7 @@ import * as Joi from '@hapi/joi';
 import { EmailService } from '@email/email.service';
 import { ConsentModule } from './consent/consent.module';
 import { ProfileModule } from './profile/profile.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
 
 @Module({
   imports: [
@@ -43,6 +44,11 @@ import { ProfileModule } from './profile/profile.module';
         NAVER_AUTH_CLIENT_ID: Joi.string().required(),
         NAVER_AUTH_CLIENT_SECRET: Joi.string().required(),
         NAVER_AUTH_CALLBACK_URL: Joi.string().required(),
+        MINIO_ENDPOINT: Joi.string().required(),
+        MINIO_PORT: Joi.number().required(),
+        MINIO_ACCESS_KEY: Joi.string().required(),
+        MINIO_SECRET_KEY: Joi.string().required(),
+        MINIO_BUCKET: Joi.string().required(),
       }),
     }),
     DatabaseModule,
@@ -54,6 +60,7 @@ import { ProfileModule } from './profile/profile.module';
     RedisModule,
     ConsentModule,
     ProfileModule,
+    MinioClientModule,
   ],
   controllers: [AppController],
   providers: [AppService, EmailService],
