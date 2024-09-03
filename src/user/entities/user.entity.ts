@@ -5,6 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import * as gravatar from 'gravatar';
 import { Exclude } from 'class-transformer';
 import { Provider } from '../../common/enums/provider.enum';
+import { Role } from '@common/enums/role.enum';
 
 @Entity()
 export class User extends BaseEntity {
@@ -27,6 +28,15 @@ export class User extends BaseEntity {
     default: Provider.LOCAL,
   })
   public provider: Provider;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    array: true,
+    default: [Role.USER],
+  })
+  @Exclude()
+  public roles: Role[];
 
   @BeforeInsert()
   async beforeSaveFunction() {
