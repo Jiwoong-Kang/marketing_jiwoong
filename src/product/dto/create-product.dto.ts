@@ -8,7 +8,7 @@ export class CreateProductDto {
   description: string;
 
   @ApiProperty({ example: 'notebookkk' })
-  productImg: string;
+  productImg?: string;
 
   @ApiProperty({ example: '100' })
   price: number;
@@ -18,4 +18,7 @@ export class CreateProductDto {
 
   @ApiProperty({ example: 'true' })
   isSale: boolean;
+
+  @ApiProperty({ example: 'iphone' })
+  category: string;
 }
