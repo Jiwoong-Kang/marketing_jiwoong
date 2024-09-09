@@ -6,12 +6,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { PageOptionsDto } from '@common/dtos/page-options.dto';
 import { PageDto } from '@common/dtos/page.dto';
 import { PageMetaDto } from '@common/dtos/page-meta.dto';
+import { BufferedFile } from '@root/minio-client/file.model';
+import { MinioClientService } from '@root/minio-client/minio-client.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    private readonly minioClientService: MinioClientService,
   ) {}
 
   async getProducts(pageOptionsDto: PageOptionsDto): Promise<PageDto<Product>> {
@@ -37,8 +40,19 @@ export class ProductService {
     return product;
   }
 
-  async postProduct(createdProductDto: CreateProductDto) {
-    const newProduct = await this.productRepository.create(createdProductDto);
+  async postProduct(
+    image?: BufferedFile,
+    createdProductDto?: CreateProductDto,
+  ) {
+    const productImg = await this.minioClientService.createProductImg(
+      image,
+      'product',
+      createdProductDto.category,
+    );
+    const newProduct = await this.productRepository.create({
+      productImg,
+      ...createdProductDto,
+    });
     await this.productRepository.save(newProduct);
     return newProduct;
   }
@@ -59,8 +73,20 @@ export class ProductService {
     return 'Deleted the product';
   }
 
-  async updateProductById(id: string, createdProductDto: CreateProductDto) {
-    await this.productRepository.update(id, createdProductDto);
+  async updateProductById(
+    id: string,
+    image?: BufferedFile,
+    updateProductDto?: CreateProductDto,
+  ) {
+    const productImg = await this.minioClientService.uploadProductImg(
+      id,
+      image,
+      'Product',
+    );
+    await this.productRepository.update(id, {
+      ...updateProductDto,
+      productImg,
+    });
     const updatedProduct = await this.productRepository.findOneBy({ id });
     if (updatedProduct) {
       return updatedProduct;
